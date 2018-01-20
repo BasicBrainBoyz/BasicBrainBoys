@@ -112,9 +112,7 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
     ylim([2 40]);
     yticks(2:40);
     title(electrode)
-    xlim([0 65])
-    
-    colorbar
+
 end
 
 
