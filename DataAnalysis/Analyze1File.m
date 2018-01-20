@@ -2,23 +2,23 @@ close all
 clear all
 
 
-Fstop = 1;
-Fpass = 10;
-Astop = 25;
-Apass = 0.5;
-%Fs = 500;
+Fstop = 0.1;
+Fpass = 5;
+Astop = 80;
+Apass = 0.1;
+Fs = 200;
 
-%d = designfilt('highpassfir','StopbandFrequency',Fstop, ...
-  %'PassbandFrequency',Fpass,'StopbandAttenuation',Astop, ...
-  %'PassbandRipple',Apass,'SampleRate',Fs,'DesignMethod','equiripple');
+d = designfilt('highpassiir','FilterOrder',2, ...
+  'PassbandFrequency',Fpass, ...
+  'PassbandRipple',Apass,'SampleRate',Fs);
 
-[b,a] = iirnotch(0.001,0.03);
+%[b,a] = iirnotch(1e-9,0.1);
 
-fvtool(b,a)
+fvtool(d)
 
 
-guy = 'Kris';
-number = '0005';
+guy = 'Brian';
+number = '0004';
 
 path = 'Raw actiCHamp Files\';
 %[hdrFile, path] = uigetfile('Raw actiCHamp Files\*.vhdr');
@@ -36,10 +36,11 @@ trigs = trigs(2:end);
 
 oscData = eeg(13:15,:);
 
-avgOscData_uf = mean(oscData);
-%avgOscData = filter(b,a,double(avgOscData_uf));
-avgOscData = avgOscData_uf(trigs:trigs+511) - mean(avgOscData_uf(trigs:trigs+511));
-%avgOscData = avgOscData(trigs:trigs+511);
+avgOscData_uf = double(mean(oscData));
+avgOscData_uf = resample(avgOscData_uf,200,500);
+avgOscData = filter(d,double(avgOscData_uf));
+%avgOscData = avgOscData_uf(trigs:trigs+511) - mean(avgOscData_uf(trigs:trigs+511));
+avgOscData = avgOscData(trigs:trigs+511);
 plot(avgOscData);
 figure()
 
@@ -58,7 +59,7 @@ thresh = 2*mean(P1(and(f>3,f<50)));
 plot(f,P1)
 hold on
 plot(f,thresh*ones(size(f)))
-xlim([10,50])
+%xlim([10,50])
 
 
 
