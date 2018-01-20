@@ -1,5 +1,6 @@
 guy = 'Brian';
 dataPath = 'Raw actiCHamp Files\';
+electrodes = {'Oz', 'O1','O2'};
 
 for i = 3:40
     if i < 10
@@ -13,6 +14,9 @@ for i = 3:40
     
     eeg = bva_loadeeg(hdrFile);
     [fs label meta] = bva_readheader(hdrFile);
+    
+    %extracting specified electrode data
+    idx = cellfun(@(str) find(strcmp(label, str)), electrodes);
     
     
 end

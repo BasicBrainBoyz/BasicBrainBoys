@@ -20,7 +20,7 @@ fvtool(b,a)
 guy = 'Kris';
 number = '0005';
 
-path = 'D:\Documents\Term8\8153\Raw actiCHamp Files\';
+path = 'Raw actiCHamp Files\';
 %[hdrFile, path] = uigetfile('Raw actiCHamp Files\*.vhdr');
 
 
