@@ -1,0 +1,8 @@
+guy = 'Brian'
+
+
+for i = 3:40
+    if i < 10
+        num = sprintf('000%s',i)
+    else
+        num = sprintf('00%s,i
