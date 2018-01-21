@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-guy = 'Kris';
+guy = 'Brian';
 dataPath = 'Raw actiCHamp Files\';
 %electrodes = {'Oz', 'O1','O2'};
 sampSize = 512;
@@ -52,6 +52,14 @@ for elec = 1:15
 
 end
 
+map =   [0,0,0;
+        1,0.753,0.796;
+        156/255,34/255,93/255;     
+        1,0.078,0.576 ];
+colormap(map)
+
+
+
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
     for i = 3:length(scores)
@@ -66,8 +74,8 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
 
     end    
     trigs = ceil((trigs-sampSize)./sampInterval+1)*200/500;
-    scatter(trigs,18:29,[],'k','filled')
-    colormap jet
+    scatter(trigs,18:29,[],'r','filled')
+
     ylim([17 30]);
     yticks(17:30);
     title(electrode)
@@ -165,9 +173,8 @@ function [score,trig,electrodes] = analyzeFFT(guy,fileNum,path,elec,sampSize,sam
 end
 
 function score = bestFreq(freqMags,fft,thresh,filtCF)
-    freqMags = freqMags-filtCF*mean(fft);
-    [fMag ,score] = max(freqMags);
-     freqMags = freqMags+filtCF*mean(fft);
+    [fMag ,score] = max(freqMags - filtCF*mean(fft));
+     
     if fMag < thresh*mean(freqMags)
         score = 0;
     end

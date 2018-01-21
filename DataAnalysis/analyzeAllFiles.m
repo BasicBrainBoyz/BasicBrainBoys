@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-guy = 'Kris';
+guy = 'Brian';
 dataPath = 'Raw actiCHamp Files\';
 %electrodes = {'Oz', 'O1','O2'};
 sampSize = 512;
@@ -93,6 +93,12 @@ for elec = 1:15
 
 end
 
+map =   [0,0,0;
+        1,0.753,0.796;        
+        1,0.078,0.576;
+        156/255,34/255,93/255 ];
+colormap(map)
+
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
     for i = 3:length(scores)
@@ -112,7 +118,7 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
     ylim([2 40]);
     yticks(2:40);
     title(electrode)
-
+    xlim([0 60])
 end
 
 
