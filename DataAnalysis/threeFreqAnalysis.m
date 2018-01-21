@@ -7,7 +7,7 @@ dataPath = 'Raw actiCHamp Files\';
 sampSize = 512;
 sampInterval = 60;
 
-thresh = 1.5; %threshold expressed as a multiple of the mean of fft
+thresh = 1; %threshold expressed as a multiple of the mean of fft
 
 
 files = 18:29; %12,20,30 Hz stimuli
@@ -29,8 +29,12 @@ trShift = min(files)-1;
 baseScore = @(frequencies,fftMag) relHeight(frequencies,fftMag,1) ;
 
 for elec = 1:15
+    baselineCF = ones(1,3);
+    for i = 1:3
+        baseScore = @(frequencies,fftMag) relHeight(frequencies,fftMag,i) ;
+        baselineCF(i) = mean(analyzeFFT(guy,1,dataPath,elec,sampSize,sampInterval,b,a,freqs, baseScore));
+    end
     
-    baselineCF = mean(analyzeFFT(guy,1,dataPath,elec,sampSize,sampInterval,b,a,freqs, baseScore));
     scoreFunc = @(frequencies, fftMag) bestFreq(frequencies,fftMag,thresh,baselineCF);
     %file numbers 2- 39 are the tests where a single frequency was viewed
     %Connor's file #2 is missing the trigger, so just looped through files 3 to
@@ -161,9 +165,9 @@ function [score,trig,electrodes] = analyzeFFT(guy,fileNum,path,elec,sampSize,sam
 end
 
 function score = bestFreq(freqMags,fft,thresh,filtCF)
-    freqMags(1) = freqMags(1)-filtCF*mean(fft);
+    freqMags = freqMags-filtCF*mean(fft);
     [fMag ,score] = max(freqMags);
-     freqMags(1) = freqMags(1)+filtCF*mean(fft);
+     freqMags = freqMags+filtCF*mean(fft);
     if fMag < thresh*mean(freqMags)
         score = 0;
     end
@@ -173,5 +177,5 @@ end
 
 function score = relHeight(freqMags,fft,freqIndex)
 
-    score = freqMags(freqIndex)/2/mean(fft);
+    score = freqMags(freqIndex)/mean(fft);
 end
