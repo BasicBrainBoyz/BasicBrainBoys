@@ -56,11 +56,11 @@ for elec = 1:15
             score = zeros(1,ceil((length(in)-sampSize)/sampInterval));
 
             %assume initial rest for first two samples
-            out(1) = b(3)*in(1);
-            out(2) = b(3)* in(2) + b(2)*in(1) - a(2)*out(1);
+            out(1) = b(1)*in(1);
+            out(2) = b(1)* in(2) + b(2)*in(1) - a(2)*out(1);
             for j = 3:length(in)
                 %treat the beginning of the loop as a single incoming sample 
-                out(j) = b(3)*in(j) + b(2)*in(j-1) + b(1)*in(j-2)-a(2)*out(j-1)-a(3)*out(j-2);
+                out(j) = b(1)*in(j) + b(2)*in(j-1) + b(3)*in(j-2)-a(2)*out(j-1)-a(3)*out(j-2);
 
                 if j>=sampSize
                     if mod((j-sampSize),sampInterval) == 0
@@ -88,38 +88,44 @@ for elec = 1:15
             scores(trial) = {score}; 
         end
         
-    subplot(3,5,elec);
+    subplot(4,4,elec+1);
     plotData(scores,trigs,sampSize,sampInterval,electrodes);
 
 end
 
-map =   [0,0,0;
-        1,0.753,0.796;        
-        1,0.078,0.576;
-        156/255,34/255,93/255 ];
-colormap(map)
+
+%colormap(map)
+colormap jet
+colorbar
 
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
+    trigs = ceil((trigs-sampSize)./sampInterval+1)*200/500;
+
+    scatter(trigs(3:39),3:39,[],'g','filled')
+
     for i = 3:length(scores)
-        data = scores{i};
+        data = scores{i}./max(scores{i});
 
 
         %vq1 = interp1(xVals,data,1:maxL);
 
         %scores{i} = vq1;
 
-        scatter(1:length(data),ones(1,length(data))*i,[],data./max(data));
+        scatter(find(data<0.6),ones(1,length(data(data <0.6)))*(i),[],'black','filled');
+        scatter(find(data>=0.6),ones(1,length(data(data >=0.6)))*(i),[],[1,0.078,0.576],'filled');
 
     end    
-    trigs = ceil((trigs-sampSize)./sampInterval+1)*200/500;
-    scatter(trigs(3:39),3:39,[],'k','filled')
-    colormap jet
-    ylim([2 40]);
-    yticks(2:40);
-    title(electrode)
-    xlim([0 60])
-end
 
+    scatter(trigs(3:39),3:39,[],'g','filled')
+
+
+    ylim([3 length(scores)+2]);
+    yticks(2:4:40);
+    title(electrode)
+    xlabel('time');
+    ylabel('trial');
+
+end
 
 

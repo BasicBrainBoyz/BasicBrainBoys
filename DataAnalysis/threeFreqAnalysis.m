@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-guy = 'Brian';
+guy = 'Kris';
 dataPath = 'Raw actiCHamp Files\';
 %electrodes = {'Oz', 'O1','O2'};
 sampSize = 512;
@@ -44,25 +44,29 @@ for elec = 1:15
     trigs = zeros(1,length(files));
     for i = 1:length(files)
         trial = files(i);
-        [scores{trial}, trigs(trial-trShift), electrode]  = analyzeFFT(guy,trial,dataPath,elec,sampSize,sampInterval,b,a,freqs, scoreFunc);
+        [scores{trial-trShift}, trigs(trial-trShift), electrode]  = analyzeFFT(guy,trial,dataPath,elec,sampSize,sampInterval,b,a,freqs, scoreFunc);
     end
         
-    subplot(3,5,elec);
+    subplot(4,4,elec+1);
     plotData(scores,trigs,sampSize,sampInterval,electrode);
 
 end
-
-map =   [0,0,0;
-        1,0.753,0.796;
-        156/255,34/255,93/255;     
-        1,0.078,0.576 ];
-colormap(map)
+legend({'trigger','No Frequency Detected','12 Hz','20 Hz', '30 Hz'},'FontSize',12);
+%map =   [0,0,0;
+ %       1,0.753,0.796;
+  %      156/255,34/255,93/255;     
+   %     1,0.078,0.576 ];
+%colormap(map)
 
 
 
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
-    for i = 3:length(scores)
+    trigs = ceil((trigs-sampSize)./sampInterval+1)*200/500;
+
+    scatter(trigs,18:length(scores)+17,[],'g','filled')
+
+    for i = 1:length(scores)
         data = scores{i};
 
 
@@ -70,15 +74,19 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
 
         %scores{i} = vq1;
 
-        scatter(1:length(data),ones(1,length(data))*i,[],data);
+        scatter(find(data==0),ones(1,length(data(data ==0)))*(i+17),[],'black','filled');
+        scatter(find(data==1),ones(1,length(data(data ==1)))*(i+17),[],[  1,0.753,0.796],'filled');
+        scatter(find(data==2),ones(1,length(data(data ==2)))*(i+17),[],[1,0.078,0.576],'filled');
+        scatter(find(data==3),ones(1,length(data(data ==3)))*(i+17),[],[156/255,34/255,93/255 ],'filled');
 
     end    
-    trigs = ceil((trigs-sampSize)./sampInterval+1)*200/500;
-    scatter(trigs,18:29,[],'r','filled')
+    scatter(trigs,18:length(scores)+17,[],'g','filled')
 
-    ylim([17 30]);
+    ylim([18 length(scores)+17]);
     yticks(17:30);
     title(electrode)
+    xlabel('time');
+    ylabel('trial');
 
 end
 
@@ -125,11 +133,11 @@ function [score,trig,electrodes] = analyzeFFT(guy,fileNum,path,elec,sampSize,sam
     score = zeros(1,ceil((length(in)-sampSize)/sampInterval));
 
     %assume initial rest for first two samples
-    out(1) = b(3)*in(1);
-    out(2) = b(3)* in(2) + b(2)*in(1) - a(2)*out(1);
+    out(1) = b(1)*in(1);
+    out(2) = b(1)* in(2) + b(2)*in(1) - a(2)*out(1);
     for j = 3:length(in)
         %treat the beginning of the loop as a single incoming sample 
-        out(j) = b(3)*in(j) + b(2)*in(j-1) + b(1)*in(j-2)-a(2)*out(j-1)-a(3)*out(j-2);
+        out(j) = b(1)*in(j) + b(2)*in(j-1) + b(3)*in(j-2)-a(2)*out(j-1)-a(3)*out(j-2);
 
         if j>=sampSize
             if mod((j-sampSize),sampInterval) == 0
