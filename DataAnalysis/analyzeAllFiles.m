@@ -94,9 +94,7 @@ for elec = 1:15
 end
 
 
-%colormap(map)
-colormap jet
-colorbar
+legend({'trigger','Normalized Magnitude < 0.6','Normalized Magnitude >= 0.6'});
 
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
