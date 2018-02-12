@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-guy = 'Brian';
+guy = 'Kris';
 dataPath = 'Raw actiCHamp Files\';
 %electrodes = {'Oz', 'O1','O2'};
 sampSize = 512;
@@ -94,7 +94,7 @@ for elec = 1:15
 end
 
 
-legend({'trigger','Normalized Magnitude < 0.6','Normalized Magnitude >= 0.6'});
+legend({'trigger','Normalized Magnitude < 0.7','Normalized Magnitude >= 0.7'});
 
 function plotData(scores,trigs,sampSize,sampInterval,electrode)
     hold on
@@ -110,8 +110,8 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
 
         %scores{i} = vq1;
 
-        scatter(find(data<0.6),ones(1,length(data(data <0.6)))*(i),[],'black','filled');
-        scatter(find(data>=0.6),ones(1,length(data(data >=0.6)))*(i),[],[1,0.078,0.576],'filled');
+        scatter(find(data<0.7),ones(1,length(data(data <0.7)))*(i),[],'black','filled');
+        scatter(find(data>=0.7),ones(1,length(data(data >=0.7)))*(i),[],[1,0.078,0.576],'filled');
 
     end    
 
@@ -122,6 +122,7 @@ function plotData(scores,trigs,sampSize,sampInterval,electrode)
     yticks(2:4:40);
     title(electrode)
     xlabel('time');
+    xlim([0 50]);
     ylabel('trial');
 
 end
