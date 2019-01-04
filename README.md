@@ -1,9 +1,3 @@
-# BasicBrainBoys
-## Trex
-
-Sexy
-
-# Serious Part
 ## Circles App
 This folder contains files used for presenting flashing stumili. There are two versions, one in Matlab and one in WPF. WPF can handle higher frequencies and presents 'triangle wave' flashing. MATLAB presents 'square wave' flashing
 
